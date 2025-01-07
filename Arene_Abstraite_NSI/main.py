@@ -307,6 +307,7 @@ def move_player(player, dx, dy, trail_color, player_color, opponent):
                     if grid[i][j] not in ("black", "gray"):
                         grid[i][j] = trail_color
         elif grid[ny][nx] == "yellow":
+            AngelSound.play()
             for i in range(max(0, ny - 2), min(GRID_SIZE, ny + 3)):
                 for j in range(max(0, nx - 2), min(GRID_SIZE, nx + 3)):
                     if grid[i][j] not in ("black", "gray"):
