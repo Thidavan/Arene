@@ -5,6 +5,8 @@ import pygame
 from pygame import mixer
 import pygame, sys, random
 
+"""Game made by people with limited and basic knowledge on coding, PLZ no hate, THANKS FOR PLAYING <3"""
+
 FROST = 0
 LIGHT_BLUISH_WHITE = (173, 216, 230)
 frost_image = pygame.image.load("assets/frost.png")
