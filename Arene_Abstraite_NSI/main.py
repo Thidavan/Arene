@@ -14,11 +14,11 @@ mixer.music.set_volume(background_music_volume) #setting Background sound volume
 mixer.music.play(-1) #playing Background Sound
 
 #Sound effects uploading
-Bouncsound = mixer.Sound("music/bouncing_sound.wav")
-AngelSound = mixer.Sound("music/angelic_choir_sound.wav")
-FreezeSound = mixer.Sound("music/freezing_sound.wav")
-ItemSound = mixer.Sound("music/mario_item_sound.wav")
-volume_SFX=1 #variable for sound effects volume
+Purple_SFX = mixer.Sound("music/bouncing_sound.wav") #need to change and place
+Yellow_SFX = mixer.Sound("music/angelic_choir_sound.wav")
+Freeze_SFX = mixer.Sound("music/freezing_sound.wav")
+Winning_SFX = mixer.Sound("music/mario_item_sound.wav")
+volume_SFX = 1 #variable for sound effects volume
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -27,21 +27,20 @@ pygame.init()
 info = pygame.display.Info() 
 screen_width,screen_height = info.current_w,info.current_h
 
-#Colours
-LIGHT_BLUISH_WHITE = (173, 216, 230)
-DARK_BLUE = (0, 108, 191)  
-DARK_RED = (186, 41, 75)
-bbluee = (69, 156, 224)
-rredd = (237, 93, 127)
-REDDDD = (186, 41, 75)
-BLUEEE = (0, 108, 191)
+#Player colours
+PLAYER_1_BLUE = (0, 108, 191)  
+PLAYER_2_RED = (186, 41, 75)
+#trail colors
+BLUE_TRAIL = (69, 156, 224)
+RED_TRAIL = (237, 93, 127)
+#arena colours
 GREEN = (138, 171, 124)
 GRAY = (50, 50, 50)
 BLACK = (0, 0, 0)
-BLUE = (69, 156, 224, 100)
-RED = (237, 93, 127, 100)
+#effect colours
 PURPLE = (150, 0, 150)
 YELLOW = (255, 212, 75)
+LIGHT_BLUISH_WHITE = (173, 216, 230)
 
 window_width,window_height = screen_width-10,screen_height-50
 SCREEN = pygame.display.set_mode((window_width,window_height))
@@ -90,6 +89,10 @@ FROST = 0 #amount of frost effects
 frost_spawn_interval = 4 #the interval for the frost effects to appear
 clock = pygame.time.Clock()
 
+#setting the font for the game display
+def get_font(size): 
+    return pygame.font.Font("assets/font.ttf", size)
+    
 #definition for options menu
 def options():
     global volume_SFX
@@ -204,34 +207,36 @@ def options():
 
         pygame.display.update()
 
+#definition to create the arena
 def draw_arena():
     for y in range(GRID_SIZE):
         for x in range(GRID_SIZE):
-            color = GREEN
+            color = GREEN 
             if grid[y][x] == "gray":
                 color = GRAY
             elif grid[y][x] == "black":
                 color = BLACK
             elif grid[y][x] == "blue":
-                color = BLUE
+                color = BLUE_TRAIL
             elif grid[y][x] == "red":
-                color = RED
+                color = RED_TRAIL
             elif grid[y][x] == "purple":
-                color = PURPLE
+                color = PURPLE #purple effect color
             elif grid[y][x] == "yellow":
-                color = YELLOW
+                color = YELLOW #yellow effect color
             elif grid[y][x] == "frost":
-                color = LIGHT_BLUISH_WHITE
+                color = LIGHT_BLUISH_WHITE #frost effect color
 
             if (x, y) == (player_blue["x"], player_blue["y"]):
-                color = DARK_BLUE
+                color = PLAYER_1_BLUE #player 1 color
             elif (x, y) == (player_red["x"], player_red["y"]):
-                color = DARK_RED
+                color = PLAYER_2_RED #player 2 color
 
             rect_x = arena_x_offset + x * PIXEL_SIZE
             rect_y = arena_y_offset + y * PIXEL_SIZE
             pygame.draw.rect(SCREEN, color, (rect_x, rect_y, PIXEL_SIZE, PIXEL_SIZE))
 
+#definition for the animation during the frost effects
 def frost_animation(target_player):
     global FROST
     global target_x
@@ -245,32 +250,35 @@ def frost_animation(target_player):
         target_y = OPTION_Y - 300
     pygame.display.flip()
 
+#definition to spanw effect pixels: (purple)3x3, (yellow)5x5 and frost
 def spawn_energy():
     global rounds
+    #purple pixel spawning
     for _ in range(purple_spawn_count):
         x, y = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
         if grid[y][x] == "green":
             grid[y][x] = "purple"
-
+            
+    #yellow pixel spawning 
     if rounds % yellow_spawn_timer == 0:
         while True:
             x, y = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
             if grid[y][x] == "green":
                 grid[y][x] = "yellow"
                 break
-
+    #frost pixel spawning
     if rounds % frost_spawn_interval == 0:
         while True:
             x, y = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
             if grid[y][x] == "green":
                 grid[y][x] = "frost"
                 break
-
+#definition to spawn walls
 def spawn_walls():
     global wall_count
     global total_walls
     global max_wall
-    """Spawns a fixed number of walls."""
+    #Spawns a fixed number of walls
     walls_spawned = 0
     if total_walls < max_wall:
         while walls_spawned < wall_count:
@@ -281,31 +289,33 @@ def spawn_walls():
                 walls_spawned += 1
                 total_walls += 1
 
-
+#definition for player movements, Moves the player on the grid with logic for frost effect
 def move_player(player, dx, dy, trail_color, player_color, opponent):
-    """Moves the player on the grid with logic for frost effect."""
     nx, ny = player["x"] + dx, player["y"] + dy
-
+    
     if 0 <= nx < GRID_SIZE and 0 <= ny < GRID_SIZE and grid[ny][nx] not in ("gray"):
         
-        grid[player["y"]][player["x"]] = trail_color
+        grid[player["y"]][player["x"]] = trail_color #coloring the player's color 
 
+        #frost effect (freezing cancelling the opponents round)
         if grid[ny][nx] == "frost":
-            FreezeSound.play()
+            Freeze_SFX.play()
             frost_animation(opponent)
             grid[ny][nx] = trail_color
             player["x"], player["y"] = nx, ny
             return True
 
-        player["x"], player["y"] = nx, ny
-
+        player["x"], player["y"] = nx, ny #player position
+        
+        #purple effect (3x3 coloring of the player's color)
         if grid[ny][nx] == "purple":
             for i in range(max(0, ny - 1), min(GRID_SIZE, ny + 2)):
                 for j in range(max(0, nx - 1), min(GRID_SIZE, nx + 2)):
                     if grid[i][j] not in ("black", "gray"):
                         grid[i][j] = trail_color
+        #yellow effect (5x5 coloring of the player's color)
         elif grid[ny][nx] == "yellow":
-            AngelSound.play()
+            Yellow_SFX.play()
             for i in range(max(0, ny - 2), min(GRID_SIZE, ny + 3)):
                 for j in range(max(0, nx - 2), min(GRID_SIZE, nx + 3)):
                     if grid[i][j] not in ("black", "gray"):
@@ -313,9 +323,6 @@ def move_player(player, dx, dy, trail_color, player_color, opponent):
 
         return False
 
-
-def get_font(size): 
-    return pygame.font.Font("assets/font.ttf", size)
 
 def play():
     global rounds
@@ -377,8 +384,8 @@ def game():
     grid[1][1] = "gray"  # Blue player's starting position
     grid[18][18] = "gray"  # Red player's starting position
 
-    global player_blue, player_red
-    player_blue = {"x": 1, "y": 1, "score": 0}  # Blue starts in top-left corner
+    global PLAYER_1_BLUE, player_red
+    player_blue= {"x": 1, "y": 1, "score": 0}  # Blue starts in top-left corner
     player_red = {"x": 18, "y": 18, "score": 0}  # Red starts in bottom-right corner
 
     spawn_energy()
@@ -438,9 +445,9 @@ def game():
     
     while rounds > 0:
         if is_blue_turn:
-            SCREEN.fill(BLUEEE)
+            SCREEN.fill("blue")
         elif not is_blue_turn:
-            SCREEN.fill(REDDDD)
+            SCREEN.fill("red")
         SCREEN.blit(IMP, (-10, 0))
         SCREEN.blit(IMP, (1235, 0))
         draw_arena()
@@ -483,69 +490,69 @@ def game():
                 if is_blue_turn:
                     if Up_Blu_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 0, -1, "blue", DARK_BLUE, player_red)
+                        frost_effect = move_player(PLAYER_1_BLUE, 0, -1, "blue", PLAYER_1_BLUE, player_red)
                         valid_input = True
                     if down_Blu_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 0, 1, "blue", DARK_BLUE, player_red)
+                        frost_effect = move_player(PLAYER_1_BLUE, 0, 1, "blue", PLAYER_1_BLUE, player_red)
                         valid_input = True
                     if left_Blu_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, -1, 0, "blue", DARK_BLUE, player_red)
+                        frost_effect = move_player(PLAYER_1_BLUE, -1, 0, "blue", PLAYER_1_BLUE, player_red)
                         valid_input = True
                     if right_Blu_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 1, 0, "blue", DARK_BLUE, player_red)
+                        frost_effect = move_player(PLAYER_1_BLUE, 1, 0, "blue", PLAYER_1_BLUE, player_red)
                         valid_input = True
                     if Up_Dub_Blu_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 0, -2, "blue", DARK_BLUE, player_red)
+                        frost_effect = move_player(PLAYER_1_BLUE, 0, -2, "blue", PLAYER_1_BLUE, player_red)
                         valid_input = True
                     if down_Dub_Blu_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 0, 2, "blue", DARK_BLUE, player_red)
+                        frost_effect = move_player(PLAYER_1_BLUE, 0, 2, "blue", PLAYER_1_BLUE, player_red)
                         valid_input = True
                     if left_Dub_Blu_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, -2, 0, "blue", DARK_BLUE, player_red)
+                        frost_effect = move_player(PLAYER_1_BLUE, -2, 0, "blue", PLAYER_1_BLUE, player_red)
                         valid_input = True
                     if right_Dub_Blu_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 2, 0, "blue", DARK_BLUE, player_red)
+                        frost_effect = move_player(PLAYER_1_BLUE, 2, 0, "blue", PLAYER_1_BLUE, player_red)
                         valid_input = True
 
                 elif not is_blue_turn:
                     if Up_red_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 0, -1, "red", DARK_RED, player_blue)
+                        frost_effect = move_player(player_red, 0, -1, "red", PLAYER_2_RED, PLAYER_1_BLUE)
                         valid_input = True
                     if down_red_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 0, 1, "red", DARK_RED, player_blue)
+                        frost_effect = move_player(player_red, 0, 1, "red", PLAYER_2_RED, PLAYER_1_BLUE)
                         valid_input = True
                     if left_red_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, -1, 0, "red", DARK_RED, player_blue)
+                        frost_effect = move_player(player_red, -1, 0, "red", PLAYER_2_RED, PLAYER_1_BLUE)
                         valid_input = True
                     if right_red_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 1, 0, "red", DARK_RED, player_blue)
+                        frost_effect = move_player(player_red, 1, 0, "red", PLAYER_2_RED, PLAYER_1_BLUE)
                         valid_input = True
                     if Up_Dub_red_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 0, -2, "red", DARK_RED, player_blue)
+                        frost_effect = move_player(player_red, 0, -2, "red", PLAYER_2_RED, PLAYER_1_BLUE)
                         valid_input = True
                     if down_Dub_red_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 0, 2, "red", DARK_RED, player_blue)
+                        frost_effect = move_player(player_red, 0, 2, "red", PLAYER_2_RED, PLAYER_1_BLUE)
                         valid_input = True
                     if left_Dub_red_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, -2, 0, "red", DARK_RED, player_blue)
+                        frost_effect = move_player(player_red, -2, 0, "red", PLAYER_2_RED, PLAYER_1_BLUE)
                         valid_input = True
                     if right_Dub_red_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 2, 0, "red", DARK_RED, player_blue)
+                        frost_effect = move_player(player_red, 2, 0, "red", PLAYER_2_RED, PLAYER_1_BLUE)
                         valid_input = True
 
         if valid_input:
@@ -560,13 +567,13 @@ def game():
         pygame.display.flip()
         clock.tick(30)
 
-    player_blue["score"] = sum(row.count("blue") for row in grid)
+    PLAYER_1_BLUE["score"] = sum(row.count("blue") for row in grid)
     player_red["score"] = sum(row.count("red") for row in grid)
-    winner = "Blue" if player_blue["score"] > player_red["score"] else "Red"
-    display_winner(winner, player_blue["score"], player_red["score"])
+    winner = "Blue" if PLAYER_1_BLUE["score"] > player_red["score"] else "Red"
+    display_winner(winner, PLAYER_1_BLUE["score"], player_red["score"])
     
 def display_winner(winner, blue_score, red_score):
-    ItemSound.play()
+    Winning_SFX.play()
     while True:
         SCREEN.fill((0, 0, 0))
 
@@ -608,10 +615,10 @@ def display_winner(winner, blue_score, red_score):
 
 def set_sound_effect_volume(volume_SFX):
     """Set the volume for all sound effects."""
-    AngelSound.set_volume(volume_SFX)
-    Bouncsound.set_volume(volume_SFX)
-    FreezeSound.set_volume(volume_SFX)
-    ItemSound.set_volume(volume_SFX)
+    Yellow_SFX.set_volume(volume_SFX)
+    Purple_SFX.set_volume(volume_SFX)
+    Freeze_SFX.set_volume(volume_SFX)
+    Winning_SFX.set_volume(volume_SFX)
     
 def set_background_music_volume(volume):
     mixer.music.set_volume(volume)
