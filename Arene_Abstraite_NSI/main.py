@@ -7,18 +7,18 @@ import pygame, sys, random
 
 """Game made by people with limited and basic knowledge on coding, PLZ no hate, THANKS FOR PLAYING <3"""
 
-FROST = 0
-LIGHT_BLUISH_WHITE = (173, 216, 230)
-frost_image = pygame.image.load("assets/frost.png")
-frost_spawn_interval = 4 
+mixer.init() #command to add sounds
+mixer.music.load("music/Background_music.mp3") #Background sound uploading
+background_music_volume = 0.5  #variable for Background sound volume
+mixer.music.set_volume(background_music_volume) #setting Background sound volume
+mixer.music.play(-1) #playing Background Sound
 
-wall_count = 5
-
-mixer.init()
-mixer.music.load("music/Background_music.mp3")
-background_music_volume = 0.5
-mixer.music.set_volume(background_music_volume)
-mixer.music.play(-1)
+#Sound effects uploading
+Bouncsound = mixer.Sound("music/bouncing_sound.wav")
+AngelSound = mixer.Sound("music/angelic_choir_sound.wav")
+FreezeSound = mixer.Sound("music/freezing_sound.wav")
+ItemSound = mixer.Sound("music/mario_item_sound.wav")
+volume_SFX=1 #variable for sound effects volume
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -27,43 +27,14 @@ pygame.init()
 info = pygame.display.Info() 
 screen_width,screen_height = info.current_w,info.current_h
 
+#Colours
+LIGHT_BLUISH_WHITE = (173, 216, 230)
 DARK_BLUE = (0, 108, 191)  
 DARK_RED = (186, 41, 75)
 bbluee = (69, 156, 224)
 rredd = (237, 93, 127)
-
-window_width,window_height = screen_width-10,screen_height-50
-SCREEN = pygame.display.set_mode((window_width,window_height))
-
-pygame.display.set_caption("Menu")
-
-Arene = pygame.image.load("assets/Arene_btn.png")
-BG = pygame.image.load("assets/Background.png")
-IMP = pygame.image.load("assets/side_bar.png")
-SIMP = pygame.image.load("assets/full_mappie.png")
-rulerer = pygame.image.load("assets/rulerer.png")
-Arene_s = (window_width//3)*2
-Arene_Ss = (810*Arene_s)//2020
-DEFAULT_IMAGE_SIZE = (Arene_s, Arene_Ss)
-Arene = pygame.transform.scale(Arene, DEFAULT_IMAGE_SIZE)
-DEFAULT_IMAGE_SISE = (window_width,window_height)
-BG = pygame.transform.scale(BG, DEFAULT_IMAGE_SISE)
-
-#SFX setting musics
-Bouncsound = mixer.Sound("music/bouncing_sound.wav")
-AngelSound = mixer.Sound("music/angelic_choir_sound.wav")
-FreezeSound = mixer.Sound("music/freezing_sound.wav")
-ItemSound = mixer.Sound("music/mario_item_sound.wav")
-secret = mixer.Sound("music/SECRET.mp3")
-volume_SFX=1
-
-QUIT_Y = window_height*0.9
-OPTION_Y = QUIT_Y - 125
-Arene_X = window_width//6
-
-pygame.init()
-
-# Colors
+REDDDD = (186, 41, 75)
+BLUEEE = (0, 108, 191)
 GREEN = (138, 171, 124)
 GRAY = (50, 50, 50)
 BLACK = (0, 0, 0)
@@ -71,6 +42,32 @@ BLUE = (69, 156, 224, 100)
 RED = (237, 93, 127, 100)
 PURPLE = (150, 0, 150)
 YELLOW = (255, 212, 75)
+
+window_width,window_height = screen_width-10,screen_height-50
+SCREEN = pygame.display.set_mode((window_width,window_height))
+
+pygame.display.set_caption("Menu")
+
+#image uploading
+Arene = pygame.image.load("assets/Arene_btn.png")
+BG = pygame.image.load("assets/Background.png")
+IMP = pygame.image.load("assets/side_bar.png")
+SIMP = pygame.image.load("assets/full_mappie.png")
+rulerer = pygame.image.load("assets/rulerer.png")
+frost_image = pygame.image.load("assets/frost.png")
+Arene_s = (window_width//3)*2
+Arene_Ss = (810*Arene_s)//2020
+DEFAULT_IMAGE_SIZE = (Arene_s, Arene_Ss)
+Arene = pygame.transform.scale(Arene, DEFAULT_IMAGE_SIZE)
+DEFAULT_IMAGE_SISE = (window_width,window_height)
+BG = pygame.transform.scale(BG, DEFAULT_IMAGE_SISE)
+
+
+QUIT_Y = window_height*0.9
+OPTION_Y = QUIT_Y - 125
+Arene_X = window_width//6
+
+pygame.init()
 
 PIXEL_SIZE = 25
 GRID_SIZE = 20
@@ -83,11 +80,17 @@ player_red = {"x": 18, "y": 18, "score": 0}
 grid = [["green" for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
 grid[1][1] = "gray"
 grid[18][18] = "gray"
-wall_chance = 0.05
+wall_count = 5 #amount of walls pers round, default = 5
+wall_chance = 0.05 #chances of appearance of walls
+total_walls = 0 #the total of walls
+max_wall = 60 #the maximum amount of walls
 purple_spawn_count = 2
 yellow_spawn_timer = 4
+FROST = 0 #amount of frost effects
+frost_spawn_interval = 4 #the interval for the frost effects to appear
 clock = pygame.time.Clock()
 
+#definition for options menu
 def options():
     global volume_SFX
     global background_music_volume
@@ -201,11 +204,7 @@ def options():
 
         pygame.display.update()
 
-def animate_player(player, target_x, target_y, color):
-    """Lame, not to do"""
-
 def draw_arena():
-    
     for y in range(GRID_SIZE):
         for x in range(GRID_SIZE):
             color = GREEN
@@ -248,7 +247,6 @@ def frost_animation(target_player):
 
 def spawn_energy():
     global rounds
-
     for _ in range(purple_spawn_count):
         x, y = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
         if grid[y][x] == "green":
@@ -267,9 +265,6 @@ def spawn_energy():
             if grid[y][x] == "green":
                 grid[y][x] = "frost"
                 break
-
-total_walls = 0
-max_wall = 60
 
 def spawn_walls():
     global wall_count
@@ -325,7 +320,6 @@ def get_font(size):
 def play():
     global rounds
     while True:
-    
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
         
         SCREEN.fill("black")
@@ -440,9 +434,7 @@ def game():
     down_red_BUTTON = Button(image=pygame.image.load("assets/arrows/player1-arrow-down.png"), 
                               pos=(window_width // 6 + 500 + 755 + 20, OPTION_Y + 50), text_input=" ", 
                               font=get_font(75), base_color="#24d19a", hovering_color="Blue")
-    
-    REDDDD = (186, 41, 75)
-    BLUEEE = (0, 108, 191)
+
     
     while rounds > 0:
         if is_blue_turn:
@@ -673,8 +665,6 @@ def RULES():
         
         rulererer = pygame.transform.scale(rulerer, (1920, 1080))
         SCREEN.blit(rulererer, (0, -50))
-        
-
         
         back_BUTTON = Button(image=None, pos=(window_width//2, window_height*0.9), 
                             text_input="BACK", font=get_font(75), base_color="Black", hovering_color="Green")
