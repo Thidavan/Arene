@@ -296,6 +296,7 @@ def move_player(player, dx, dy, trail_color, player_color, opponent):
         grid[player["y"]][player["x"]] = trail_color
 
         if grid[ny][nx] == "frost":
+            FreezeSound.play()
             frost_animation(opponent)
             grid[ny][nx] = trail_color
             player["x"], player["y"] = nx, ny
@@ -451,7 +452,15 @@ def game():
         SCREEN.blit(IMP, (-10, 0))
         SCREEN.blit(IMP, (1235, 0))
         draw_arena()
-
+        
+        blue_scorez = sum(row.count("blue") for row in grid)
+        red_scorez = sum(row.count("red") for row in grid)
+        
+        bluez_text = get_font(30).render(f"Points: {blue_scorez}", True, "royalblue3")
+        SCREEN.blit(bluez_text, (50, 40))
+        redz_text = get_font(30).render(f"Points: {red_scorez}", True, "red3")
+        SCREEN.blit(redz_text, (1275, 40))
+        
         rounds_text = get_font(30).render(f"Rounds Left: {rounds}", True, "White")
         SCREEN.blit(rounds_text, (720, 20))
 
