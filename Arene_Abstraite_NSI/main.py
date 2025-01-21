@@ -44,7 +44,6 @@ window_width,window_height = screen_width-10,screen_height-50
 SCREEN = pygame.display.set_mode((window_width,window_height))
 pygame.display.set_caption("Menu")
 
-#image uploading
 Arene_s = (window_width//3)*2
 Arene_Ss = (810*Arene_s)//2020
 DEFAULT_IMAGE_SIZE = (Arene_s, Arene_Ss)
@@ -53,6 +52,7 @@ QUIT_Y = window_height*0.9
 OPTION_Y = QUIT_Y - 125
 Arene_X = window_width//6
 
+#image uploading
 Arene = pygame.image.load("assets/Arene_btn.png")
 Arene = pygame.transform.scale(Arene, DEFAULT_IMAGE_SIZE)
 Background_Image = pygame.image.load("assets/Background.png")
@@ -62,12 +62,6 @@ Rules_Image = pygame.image.load("assets/rulerer.png")
 Rules_Image = pygame.transform.scale(Rules_Image, (1920, 1080))
 frost_image = pygame.image.load("assets/frost.png")
 
-FROST = 0
-
-
-frost_spawn_interval = 4 
-
-wall_count = 5
 
 PIXEL_SIZE = 25
 GRID_SIZE = 20
@@ -80,9 +74,16 @@ player_red = {"x": 18, "y": 18, "score": 0}
 grid = [["green" for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
 grid[1][1] = "gray"
 grid[18][18] = "gray"
+
+wall_count = 5
 wall_chance = 0.05
+total_walls = 0
+max_wall = 60
+
 purple_spawn_count = 2
 yellow_spawn_timer = 4
+FROST = 0
+frost_spawn_interval = 4 
 clock = pygame.time.Clock()
 
 def options():
@@ -198,11 +199,7 @@ def options():
 
         pygame.display.update()
 
-def animate_player(player, target_x, target_y, color):
-    """Lame, not to do"""
-
 def draw_arena():
-    
     for y in range(GRID_SIZE):
         for x in range(GRID_SIZE):
             color = GREEN
@@ -245,7 +242,6 @@ def frost_animation(target_player):
 
 def spawn_energy():
     global rounds
-
     for _ in range(purple_spawn_count):
         x, y = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
         if grid[y][x] == "green":
@@ -265,8 +261,7 @@ def spawn_energy():
                 grid[y][x] = "frost"
                 break
 
-total_walls = 0
-max_wall = 60
+#originally  here
 
 def spawn_walls():
     global wall_count
