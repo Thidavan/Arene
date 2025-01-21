@@ -261,8 +261,6 @@ def spawn_energy():
                 grid[y][x] = "frost"
                 break
 
-#originally  here
-
 def spawn_walls():
     global wall_count
     global total_walls
@@ -284,16 +282,15 @@ def move_player(player, dx, dy, trail_color, player_color, opponent):
     nx, ny = player["x"] + dx, player["y"] + dy
 
     if 0 <= nx < GRID_SIZE and 0 <= ny < GRID_SIZE and grid[ny][nx] not in ("gray"):
-        
         grid[player["y"]][player["x"]] = trail_color
-
+        
         if grid[ny][nx] == "frost":
             Freeze_SFX.play()
             frost_animation(opponent)
             grid[ny][nx] = trail_color
             player["x"], player["y"] = nx, ny
             return True
-
+            
         player["x"], player["y"] = nx, ny
 
         if grid[ny][nx] == "purple":
@@ -307,9 +304,7 @@ def move_player(player, dx, dy, trail_color, player_color, opponent):
                 for j in range(max(0, nx - 2), min(GRID_SIZE, nx + 3)):
                     if grid[i][j] not in ("black", "gray"):
                         grid[i][j] = trail_color
-
         return False
-
 
 def get_font(size): 
     return pygame.font.Font("assets/font.ttf", size)
@@ -317,11 +312,10 @@ def get_font(size):
 def play():
     global rounds
     while True:
-    
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
         
         SCREEN.fill("black")
-
+        
         PLAY_TEXT = get_font(45).render("How many rounds?", True, "White")
         PLAY_RECT = PLAY_TEXT.get_rect(center=(window_width//2, window_height*0.2))
         SCREEN.blit(PLAY_TEXT, PLAY_RECT)
@@ -573,8 +567,8 @@ def display_winner(winner, blue_score, red_score):
         SCREEN.blit(winner_text, winner_rect)
 
         # Display scores
-        blue_score_text = get_font(40).render(f"Blue Score: {blue_score}", True, "Blue")
-        red_score_text = get_font(40).render(f"Red Score: {red_score}", True, "Red")
+        blue_score_text = get_font(40).render(f"Blue Score: {blue_score}", True, "cornflower blue")
+        red_score_text = get_font(40).render(f"Red Score: {red_score}", True, "firebrick3")
         blue_score_rect = blue_score_text.get_rect(center=(screen_width // 2, screen_height // 2))
         red_score_rect = red_score_text.get_rect(center=(screen_width // 2, screen_height // 2 + 50))
         SCREEN.blit(blue_score_text, blue_score_rect)
@@ -623,7 +617,6 @@ def main_menu():
         
         MENU_TEXT = get_font(100).render(" ", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
-
        
         PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(window_width//2,OPTION_Y-125), 
                             text_input=" ", font=get_font(75), base_color="#24d19a", hovering_color="Blue")
