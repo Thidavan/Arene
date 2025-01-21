@@ -59,20 +59,17 @@ Arene_s = (window_width//3)*2
 Arene_Ss = (810*Arene_s)//2020
 DEFAULT_IMAGE_SIZE = (Arene_s, Arene_Ss)
 DEFAULT_IMAGE_SISE = (window_width,window_height)
+QUIT_Y = window_height*0.9
+OPTION_Y = QUIT_Y - 125
+Arene_X = window_width//6
 
 Arene = pygame.image.load("assets/Arene_btn.png")
 Arene = pygame.transform.scale(Arene, DEFAULT_IMAGE_SIZE)
 Background_Image = pygame.image.load("assets/Background.png")
 Background_Image = pygame.transform.scale(Background_Image, DEFAULT_IMAGE_SISE)
 Side_Bar_Image = pygame.image.load("assets/side_bar.png")
-rulerer = pygame.image.load("assets/rulerer.png")
-
-
-QUIT_Y = window_height*0.9
-OPTION_Y = QUIT_Y - 125
-Arene_X = window_width//6
-
-pygame.init()
+Rules_Image = pygame.image.load("assets/rulerer.png")
+Rules_Image = pygame.transform.scale(Rules_Image, (1920, 1080))
 
 
 PIXEL_SIZE = 25
@@ -667,13 +664,8 @@ def main_menu():
 def RULES():
     while True:
         SCREEN.fill("white")
-
         RULES_MOUSE_POS = pygame.mouse.get_pos()
-        
-        rulererer = pygame.transform.scale(rulerer, (1920, 1080))
-        SCREEN.blit(rulererer, (0, -50))
-        
-
+        SCREEN.blit(Rules_Image, (0, -50))
         
         back_BUTTON = Button(image=None, pos=(window_width//2, window_height*0.9), 
                             text_input="BACK", font=get_font(75), base_color="Black", hovering_color="Green")
