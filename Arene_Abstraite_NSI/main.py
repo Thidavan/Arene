@@ -24,10 +24,8 @@ volume_SFX=1 #variable for sound effects volume
 Player_1_Blue = (0, 108, 191)  #player
 Player_2_Red = (186, 41, 75) #player
 #Trail Colours
-bbluee = (69, 156, 224) #trail
-rredd = (237, 93, 127) #trail
-BLUE = (69, 156, 224, 100) #trail
-RED = (237, 93, 127, 100) #trail
+Blue_Trail = (69, 156, 224, 100) #trail
+Red_Trail = (237, 93, 127, 100) #trail
 
 #Arena colours
 GREEN = (138, 171, 124)
@@ -213,9 +211,9 @@ def draw_arena():
             elif grid[y][x] == "black":
                 color = BLACK
             elif grid[y][x] == "blue":
-                color = BLUE
+                color = Blue_Trail
             elif grid[y][x] == "red":
-                color = RED
+                color = Red_Trail
             elif grid[y][x] == "purple":
                 color = PURPLE
             elif grid[y][x] == "yellow":
