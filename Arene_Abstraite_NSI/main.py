@@ -233,11 +233,11 @@ def frost_animation(target_player):
     global target_y
     FROST = 1
     if target_player == player_red:
-        target_x = (window_width // 6)*4
-        target_y = OPTION_Y - 250
+        target_x = 1370
+        target_y = OPTION_Y - 280
     else:
-        target_x = 50
-        target_y = OPTION_Y - 300
+        target_x = 95
+        target_y = OPTION_Y - 280
     pygame.display.flip()
 
 def spawn_energy():
@@ -670,3 +670,4 @@ def RULES():
         pygame.display.update()
 
 main_menu()
+
