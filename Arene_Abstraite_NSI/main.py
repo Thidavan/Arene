@@ -20,31 +20,23 @@ Freeze_SFX = mixer.Sound("music/freezing_sound.wav")
 Winning_SFX = mixer.Sound("music/mario_item_sound.wav")
 volume_SFX=1 #variable for sound effects volume
 
+#Player Colours
+Player_1_Blue = (0, 108, 191)  #player
+Player_2_Red = (186, 41, 75) #player
+#Trail Colours
+bbluee = (69, 156, 224) #trail
+rredd = (237, 93, 127) #trail
+BLUE = (69, 156, 224, 100) #trail
+RED = (237, 93, 127, 100) #trail
 
-FROST = 0
-LIGHT_BLUISH_WHITE = (173, 216, 230)
-frost_image = pygame.image.load("assets/frost.png")
-frost_spawn_interval = 4 
-
-wall_count = 5
-
-# Colors
+#Arena colours
 GREEN = (138, 171, 124)
 GRAY = (50, 50, 50)
 BLACK = (0, 0, 0)
-BLUE = (69, 156, 224, 100) #trail
-RED = (237, 93, 127, 100) #trail
+#Effect Colours
 PURPLE = (150, 0, 150)
 YELLOW = (255, 212, 75)
-
-DARK_BLUE = (0, 108, 191)  #player
-DARK_RED = (186, 41, 75) #player
-
-bbluee = (69, 156, 224) #trail
-rredd = (237, 93, 127) #trail
-
-REDDDD = (186, 41, 75) #player
-BLUEEE = (0, 108, 191) #player
+LIGHT_BLUISH_WHITE = (173, 216, 230)
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.init()
@@ -70,7 +62,14 @@ Background_Image = pygame.transform.scale(Background_Image, DEFAULT_IMAGE_SISE)
 Side_Bar_Image = pygame.image.load("assets/side_bar.png")
 Rules_Image = pygame.image.load("assets/rulerer.png")
 Rules_Image = pygame.transform.scale(Rules_Image, (1920, 1080))
+frost_image = pygame.image.load("assets/frost.png")
 
+FROST = 0
+
+
+frost_spawn_interval = 4 
+
+wall_count = 5
 
 PIXEL_SIZE = 25
 GRID_SIZE = 20
@@ -225,9 +224,9 @@ def draw_arena():
                 color = LIGHT_BLUISH_WHITE
 
             if (x, y) == (player_blue["x"], player_blue["y"]):
-                color = DARK_BLUE
+                color = Player_1_Blue
             elif (x, y) == (player_red["x"], player_red["y"]):
-                color = DARK_RED
+                color = Player_2_Red
 
             rect_x = arena_x_offset + x * PIXEL_SIZE
             rect_y = arena_y_offset + y * PIXEL_SIZE
@@ -443,9 +442,9 @@ def game():
     
     while rounds > 0:
         if is_blue_turn:
-            SCREEN.fill(BLUEEE)
+            SCREEN.fill(Player_1_Blue)
         elif not is_blue_turn:
-            SCREEN.fill(REDDDD)
+            SCREEN.fill(Player_2_Red)
         SCREEN.blit(Side_Bar_Image, (-10, 0))
         SCREEN.blit(Side_Bar_Image, (1235, 0))
         draw_arena()
@@ -488,69 +487,69 @@ def game():
                 if is_blue_turn:
                     if Up_Blu_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 0, -1, "blue", DARK_BLUE, player_red)
+                        frost_effect = move_player(player_blue, 0, -1, "blue", Player_1_Blue, player_red)
                         valid_input = True
                     if down_Blu_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 0, 1, "blue", DARK_BLUE, player_red)
+                        frost_effect = move_player(player_blue, 0, 1, "blue", Player_1_Blue, player_red)
                         valid_input = True
                     if left_Blu_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, -1, 0, "blue", DARK_BLUE, player_red)
+                        frost_effect = move_player(player_blue, -1, 0, "blue", Player_1_Blue, player_red)
                         valid_input = True
                     if right_Blu_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 1, 0, "blue", DARK_BLUE, player_red)
+                        frost_effect = move_player(player_blue, 1, 0, "blue", Player_1_Blue, player_red)
                         valid_input = True
                     if Up_Dub_Blu_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 0, -2, "blue", DARK_BLUE, player_red)
+                        frost_effect = move_player(player_blue, 0, -2, "blue", Player_1_Blue, player_red)
                         valid_input = True
                     if down_Dub_Blu_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 0, 2, "blue", DARK_BLUE, player_red)
+                        frost_effect = move_player(player_blue, 0, 2, "blue", Player_1_Blue, player_red)
                         valid_input = True
                     if left_Dub_Blu_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, -2, 0, "blue", DARK_BLUE, player_red)
+                        frost_effect = move_player(player_blue, -2, 0, "blue", Player_1_Blue, player_red)
                         valid_input = True
                     if right_Dub_Blu_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 2, 0, "blue", DARK_BLUE, player_red)
+                        frost_effect = move_player(player_blue, 2, 0, "blue", Player_1_Blue, player_red)
                         valid_input = True
 
                 elif not is_blue_turn:
                     if Up_red_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 0, -1, "red", DARK_RED, player_blue)
+                        frost_effect = move_player(player_red, 0, -1, "red", Player_2_Red, player_blue)
                         valid_input = True
                     if down_red_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 0, 1, "red", DARK_RED, player_blue)
+                        frost_effect = move_player(player_red, 0, 1, "red", Player_2_Red, player_blue)
                         valid_input = True
                     if left_red_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, -1, 0, "red", DARK_RED, player_blue)
+                        frost_effect = move_player(player_red, -1, 0, "red", Player_2_Red, player_blue)
                         valid_input = True
                     if right_red_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 1, 0, "red", DARK_RED, player_blue)
+                        frost_effect = move_player(player_red, 1, 0, "red", Player_2_Red, player_blue)
                         valid_input = True
                     if Up_Dub_red_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 0, -2, "red", DARK_RED, player_blue)
+                        frost_effect = move_player(player_red, 0, -2, "red", Player_2_Red, player_blue)
                         valid_input = True
                     if down_Dub_red_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 0, 2, "red", DARK_RED, player_blue)
+                        frost_effect = move_player(player_red, 0, 2, "red", Player_2_Red, player_blue)
                         valid_input = True
                     if left_Dub_red_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, -2, 0, "red", DARK_RED, player_blue)
+                        frost_effect = move_player(player_red, -2, 0, "red", Player_2_Red, player_blue)
                         valid_input = True
                     if right_Dub_red_BUTTON.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 2, 0, "red", DARK_RED, player_blue)
+                        frost_effect = move_player(player_red, 2, 0, "red", Player_2_Red, player_blue)
                         valid_input = True
 
         if valid_input:
