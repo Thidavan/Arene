@@ -14,28 +14,28 @@ mixer.music.set_volume(background_music_volume) #setting Background sound volume
 mixer.music.play(-1) #playing Background Sound
 
 #Sound effects uploading
-Purple_SFX = mixer.Sound("music/bouncing_sound.wav") #need to change and place
+Purple_SFX = mixer.Sound("music/squeak_sound.wav") #need to change and place
 Yellow_SFX = mixer.Sound("music/angelic_choir_sound.wav")
 Freeze_SFX = mixer.Sound("music/freezing_sound.wav")
-Winning_SFX = mixer.Sound("music/mario_item_sound.wav")
+Winning_SFX = mixer.Sound("music/yay_sound.wav")
 volume_SFX=1 #variable for sound effects volume
 
 #Player Colours
-Player1_Blue = (0, 108, 191)  #player 1; color blue
-Player2_Red = (186, 41, 75) #player 2; color red
+Player1_Blue = (0, 108, 191)  #player
+Player2_Red = (186, 41, 75) #player
 #Trail Colours
-Blue_Trail = (69, 156, 224, 100) #trail of player 1; color blue
-Red_Trail = (237, 93, 127, 100) #trail of player 2; color blue
+Blue_Trail = (69, 156, 224, 100) #trail
+Red_Trail = (237, 93, 127, 100) #trail
 
 #Arena colours
-GREEN = (138, 171, 124) #color of the arena
-GRAY = (50, 50, 50) 
+GREEN = (138, 171, 124)
+GRAY = (50, 50, 50)
 BLACK = (0, 0, 0)
 #Effect Colours
-PURPLE = (150, 0, 150) #color of the 3x3 effect
-YELLOW = (255, 212, 75) #color of the 5x5 effect
-LIGHT_BLUISH_WHITE = (173, 216, 230) #color of frost effect
-PEACH = (255, 218, 185) #color of the adding rounds effect
+PURPLE = (150, 0, 150)
+YELLOW = (255, 212, 75)
+LIGHT_BLUISH_WHITE = (173, 216, 230)
+PEACH = (255, 218, 185)
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.init()
@@ -681,3 +681,4 @@ def RULES():
         pygame.display.update()
 
 main_menu()
+
