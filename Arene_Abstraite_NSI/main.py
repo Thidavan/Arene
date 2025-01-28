@@ -21,21 +21,21 @@ Winning_SFX = mixer.Sound("music/mario_item_sound.wav")
 volume_SFX=1 #variable for sound effects volume
 
 #Player Colours
-Player_1_Blue = (0, 108, 191)  #player
-Player_2_Red = (186, 41, 75) #player
+Player1_Blue = (0, 108, 191)  #player 1; color blue
+Player2_Red = (186, 41, 75) #player 2; color red
 #Trail Colours
-Blue_Trail = (69, 156, 224, 100) #trail
-Red_Trail = (237, 93, 127, 100) #trail
+Blue_Trail = (69, 156, 224, 100) #trail of player 1; color blue
+Red_Trail = (237, 93, 127, 100) #trail of player 2; color blue
 
 #Arena colours
-GREEN = (138, 171, 124)
-GRAY = (50, 50, 50)
+GREEN = (138, 171, 124) #color of the arena
+GRAY = (50, 50, 50) 
 BLACK = (0, 0, 0)
 #Effect Colours
-PURPLE = (150, 0, 150)
-YELLOW = (255, 212, 75)
-LIGHT_BLUISH_WHITE = (173, 216, 230)
-PEACH = (255, 218, 185)
+PURPLE = (150, 0, 150) #color of the 3x3 effect
+YELLOW = (255, 212, 75) #color of the 5x5 effect
+LIGHT_BLUISH_WHITE = (173, 216, 230) #color of frost effect
+PEACH = (255, 218, 185) #color of the adding rounds effect
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.init()
@@ -81,11 +81,11 @@ wall_chance = 0.05
 total_walls = 0
 max_wall = 60
 
-purple_spawn_count = 2
-yellow_spawn_timer = 4
+purple_spawn_interval = 2
+yellow_spawn_interval = 4
 FROST = 0
 frost_spawn_interval = 4
-PEACH_spawn_interval = 10
+peach_spawn_interval = 10
 clock = pygame.time.Clock()
 
 def options():
@@ -215,9 +215,9 @@ def draw_arena():
                 color = PEACH
 
             if (x, y) == (player_blue["x"], player_blue["y"]):
-                color = Player_1_Blue
+                color = Player1_Blue
             elif (x, y) == (player_red["x"], player_red["y"]):
-                color = Player_2_Red
+                color = Player2_Red
 
             rect_x = arena_x_offset + x * PIXEL_SIZE
             rect_y = arena_y_offset + y * PIXEL_SIZE
@@ -238,12 +238,12 @@ def frost_animation(target_player):
 
 def spawn_energy():
     global rounds
-    for _ in range(purple_spawn_count):
+    for _ in range(purple_spawn_interval):
         x, y = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
         if grid[y][x] == "green":
             grid[y][x] = "purple"
 
-    if rounds % yellow_spawn_timer == 0:
+    if rounds % yellow_spawn_interval == 0:
         while True:
             x, y = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
             if grid[y][x] == "green":
@@ -257,7 +257,7 @@ def spawn_energy():
                 grid[y][x] = "frost"
                 break
             
-    if rounds % PEACH_spawn_interval == 0:
+    if rounds % peach_spawn_interval == 0:
         while True:
             x, y = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
             if grid[y][x] == "green":
@@ -330,41 +330,41 @@ def play():
         PLAY_RECT = PLAY_TEXT.get_rect(center=(window_width//2, window_height*0.2))
         SCREEN.blit(PLAY_TEXT, PLAY_RECT)
 
-        PLAY_BACK = Button(image=None, pos=(window_width//2, window_height*0.9), 
+        BACK_Play_Button = Button(image=None, pos=(window_width//2, window_height*0.9), 
                             text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
-        twenty_rounds = Button(image=pygame.image.load("assets/20wings.png"), pos=(window_width*3//4,window_height*0.5), 
+        Twenty_Rounds_Button = Button(image=pygame.image.load("assets/20wings.png"), pos=(window_width*3//4,window_height*0.5), 
                             text_input=" ", font=get_font(75), base_color="#24d19a", hovering_color="Blue")
-        fifty_rounds = Button(image=pygame.image.load("assets/50crown.png"), pos=(window_width*0.47,window_height*0.5), 
+        Fifty_Rounds_Button = Button(image=pygame.image.load("assets/50crown.png"), pos=(window_width*0.47,window_height*0.5), 
                             text_input=" ", font=get_font(75), base_color="#24d19a", hovering_color="Blue")
-        hundred_rounds = Button(image=pygame.image.load("assets/100castle.png"), pos=(window_width*1//4,window_height*0.48), 
+        Hundred_Rounds_Button = Button(image=pygame.image.load("assets/100castle.png"), pos=(window_width*1//4,window_height*0.48), 
                             text_input=" ", font=get_font(75), base_color="#24d19a", hovering_color="Blue")
-        RULES_BUTTON = Button(image=pygame.image.load("assets/Rules.png"), pos=(window_width*0.5,window_height*0.75), 
+        RULES_Button = Button(image=pygame.image.load("assets/Rules.png"), pos=(window_width*0.5,window_height*0.75), 
                             text_input=" ", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
 
-        for button in [twenty_rounds, fifty_rounds, hundred_rounds, RULES_BUTTON]:
+        for button in [Twenty_Rounds_Button, Fifty_Rounds_Button, Hundred_Rounds_Button, RULES_Button]:
             button.changeColor(PLAY_MOUSE_POS)
             button.update(SCREEN)
 
-        PLAY_BACK.changeColor(PLAY_MOUSE_POS)
-        PLAY_BACK.update(SCREEN)
+        BACK_Play_Button.changeColor(PLAY_MOUSE_POS)
+        BACK_Play_Button.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
+                if BACK_Play_Button.checkForInput(PLAY_MOUSE_POS):
                     main_menu()
-                if twenty_rounds.checkForInput(PLAY_MOUSE_POS):
+                if Twenty_Rounds_Button.checkForInput(PLAY_MOUSE_POS):
                     rounds = 20
                     game()
-                if fifty_rounds.checkForInput(PLAY_MOUSE_POS):
+                if Fifty_Rounds_Button.checkForInput(PLAY_MOUSE_POS):
                     rounds = 50
                     game()
-                if hundred_rounds.checkForInput(PLAY_MOUSE_POS):
+                if Hundred_Rounds_Button.checkForInput(PLAY_MOUSE_POS):
                     rounds = 100
                     game()
-                if RULES_BUTTON.checkForInput(PLAY_MOUSE_POS):
+                if RULES_Button.checkForInput(PLAY_MOUSE_POS):
                     RULES()
 
         pygame.display.update()
@@ -439,9 +439,9 @@ def game():
     
     while rounds > 0:
         if Player1_turn:
-            SCREEN.fill(Player_1_Blue)
+            SCREEN.fill(Player1_Blue)
         elif not Player1_turn:
-            SCREEN.fill(Player_2_Red)
+            SCREEN.fill(Player2_Red)
         SCREEN.blit(Side_Bar_Image, (-10, 0))
         SCREEN.blit(Side_Bar_Image, (1235, 0))
         draw_arena()
@@ -449,17 +449,17 @@ def game():
         Player1_Scores = sum(row.count("blue") for row in grid)
         Player2_Scores = sum(row.count("red") for row in grid)
         
-        bluez_text = get_font(30).render(f"Points: {Player1_Scores}", True, "royalblue3")
-        SCREEN.blit(bluez_text, (50, 40))
-        redz_text = get_font(30).render(f"Points: {Player2_Scores}", True, "red3")
-        SCREEN.blit(redz_text, (1275, 40))
+        Blue_Text = get_font(30).render(f"Points: {Player1_Scores}", True, "royalblue3")
+        SCREEN.blit(Blue_Text, (50, 40))
+        Red_Text = get_font(30).render(f"Points: {Player2_Scores}", True, "red3")
+        SCREEN.blit(Red_Text, (1275, 40))
         
-        rounds_text = get_font(30).render(f"Rounds Left: {rounds}", True, "White")
-        SCREEN.blit(rounds_text, (720, 20))
+        Rounds_Text = get_font(30).render(f"Rounds Left: {rounds}", True, "White")
+        SCREEN.blit(Rounds_Text, (720, 20))
 
-        turn_text = "Blue's Turn" if Player1_turn else "Red's Turn"
-        turn_display = get_font(30).render(turn_text, True, "lightskyblue" if Player1_turn else "lightcoral")
-        SCREEN.blit(turn_display, (720, 60))
+        Turn_Text = "Blue's Turn" if Player1_turn else "Red's Turn"
+        Turn_Display = get_font(30).render(Turn_Text, True, "lightskyblue" if Player1_turn else "lightcoral")
+        SCREEN.blit(Turn_Display, (720, 60))
 
         for button in [
             UP_2x_Blue_Button, LEFT_2x_Blue_Button, RIGHT_2x_Blue_Button, DOWN_2x_Blue_Button,
@@ -484,69 +484,69 @@ def game():
                 if Player1_turn:
                     if UP_Blue_Button.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 0, -1, "blue", Player_1_Blue, player_red)
+                        frost_effect = move_player(player_blue, 0, -1, "blue", Player1_Blue, player_red)
                         valid_input = True
                     if DOWN_Blue_Button.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 0, 1, "blue", Player_1_Blue, player_red)
+                        frost_effect = move_player(player_blue, 0, 1, "blue", Player1_Blue, player_red)
                         valid_input = True
                     if LEFT_Blue_Button.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, -1, 0, "blue", Player_1_Blue, player_red)
+                        frost_effect = move_player(player_blue, -1, 0, "blue", Player1_Blue, player_red)
                         valid_input = True
                     if RIGHT_Blue_Button.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 1, 0, "blue", Player_1_Blue, player_red)
+                        frost_effect = move_player(player_blue, 1, 0, "blue", Player1_Blue, player_red)
                         valid_input = True
                     if UP_2x_Blue_Button.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 0, -2, "blue", Player_1_Blue, player_red)
+                        frost_effect = move_player(player_blue, 0, -2, "blue", Player1_Blue, player_red)
                         valid_input = True
                     if DOWN_2x_Blue_Button.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 0, 2, "blue", Player_1_Blue, player_red)
+                        frost_effect = move_player(player_blue, 0, 2, "blue", Player1_Blue, player_red)
                         valid_input = True
                     if LEFT_2x_Blue_Button.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, -2, 0, "blue", Player_1_Blue, player_red)
+                        frost_effect = move_player(player_blue, -2, 0, "blue", Player1_Blue, player_red)
                         valid_input = True
                     if RIGHT_2x_Blue_Button.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_blue, 2, 0, "blue", Player_1_Blue, player_red)
+                        frost_effect = move_player(player_blue, 2, 0, "blue", Player1_Blue, player_red)
                         valid_input = True
 
                 elif not Player1_turn:
                     if UP_Red_Button.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 0, -1, "red", Player_2_Red, player_blue)
+                        frost_effect = move_player(player_red, 0, -1, "red", Player2_Red, player_blue)
                         valid_input = True
                     if DOWN_Red_Button.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 0, 1, "red", Player_2_Red, player_blue)
+                        frost_effect = move_player(player_red, 0, 1, "red", Player2_Red, player_blue)
                         valid_input = True
                     if LEFT_Red_Button.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, -1, 0, "red", Player_2_Red, player_blue)
+                        frost_effect = move_player(player_red, -1, 0, "red", Player2_Red, player_blue)
                         valid_input = True
                     if RIGHT_Red_Button.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 1, 0, "red", Player_2_Red, player_blue)
+                        frost_effect = move_player(player_red, 1, 0, "red", Player2_Red, player_blue)
                         valid_input = True
                     if UP_2x_Red_Button.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 0, -2, "red", Player_2_Red, player_blue)
+                        frost_effect = move_player(player_red, 0, -2, "red", Player2_Red, player_blue)
                         valid_input = True
                     if DOWN_2x_Red_Button.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 0, 2, "red", Player_2_Red, player_blue)
+                        frost_effect = move_player(player_red, 0, 2, "red", Player2_Red, player_blue)
                         valid_input = True
                     if LEFT_2x_Red_Button.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, -2, 0, "red", Player_2_Red, player_blue)
+                        frost_effect = move_player(player_red, -2, 0, "red", Player2_Red, player_blue)
                         valid_input = True
                     if RIGHT_2x_Red_Button.checkForInput(pygame.mouse.get_pos()):
                         FROST = 0
-                        frost_effect = move_player(player_red, 2, 0, "red", Player_2_Red, player_blue)
+                        frost_effect = move_player(player_red, 2, 0, "red", Player2_Red, player_blue)
                         valid_input = True
 
         if valid_input:
