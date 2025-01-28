@@ -299,6 +299,7 @@ def move_player(player, dx, dy, trail_color, player_color, opponent):
         player["x"], player["y"] = nx, ny
 
         if grid[ny][nx] == "purple":
+            Purple_SFX.play(2)
             for i in range(max(0, ny - 1), min(GRID_SIZE, ny + 2)):
                 for j in range(max(0, nx - 1), min(GRID_SIZE, nx + 2)):
                     if grid[i][j] not in ("black", "gray"):
